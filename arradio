@@ -96,6 +96,7 @@ Commands:
   ui                       Start UI (fzf required)
   tlist                    List installed UI themes
   env                      Show environment variables
+  keys                     Show keybindings
   version                  Show version
   help                     Show this help
 
@@ -226,7 +227,7 @@ arradio-set-player() {
   if ! type -P $pcmd >/dev/null 2>&1; then
     # Auto-detect player
     if type -P mpv >/dev/null 2>&1; then
-      pcmd="mpv --no-video"
+      pcmd="mpv --no-video > /dev/null 2>&1"
     elif [ -f /Applications/mpv.app/Contents/MacOS/mpv ]; then
       pcmd="/Applications/mpv.app/Contents/MacOS/mpv --no-video"
     elif type -P ffplay >/dev/null 2>&1; then
@@ -645,7 +646,7 @@ arradio-ui-set-theme() {
     # shellcheck disable=SC1090
     . "${ARRADIO_UI_THEME_DIR}/${ARRADIO_UI_THEME}"
     # TODO: detect COLORTEPRM=truecolor and show a message if theme is not 24-bit
-    if [ "${COLORTERM}" != "truecolor" ] && [ ${ui_theme_palette} != "8-bit" ]; then
+    if (( $(tput colors 2>/dev/null) < 256 )); then
       arradio-msg-error "Your terminal does not support 24-bit (truecolor). Try the 8-bit variant for ${ARRADIO_UI_THEME} or use a truecolor terminal."
     fi
     for ui_theme_var in "${ui_theme_vars[@]}"; do
@@ -778,9 +779,9 @@ arradio-ui() {
     # Add --no-separator and --padding only for fzf >= 0.4.0
     fzf_args+=( --no-separator --padding=1)
     # Add --preview-window options only for fzf >= 0.4.0
-    fzf_args+=( --preview-window 'down,33%,border,follow')
+    fzf_args+=( --preview-window 'down,15%,border,follow')
     # Add fzf border with label only for fzf >= 0.4.0
-    fzf_args+=( --border=bold "--border-label= arradio v${ARRADIO_VERSION} " --border-label-pos=0)
+    fzf_args+=( --border=bold "--border-label= arradio v${ARRADIO_VERSION} ${ui_theme_name} theme " --border-label-pos=0)
     # Add advanced bindings for fzf >= 0.4.0
     fzf_args+=( --bind "enter:change-preview(arradio play {1} -p '${ARRADIO_PLAYER_CMD}')")
     fzf_args+=( --bind "focus:change-preview(arradio info {1})")
@@ -792,7 +793,7 @@ arradio-ui() {
     # Use arradio play in preview window for fzf < 0.4.0
     fzf_args+=( --preview 'arradio play {1}')
     # Use simpler preview window for fzf < 0.4.0
-    fzf_args+=( --preview-window 'down:33%')
+    fzf_args+=( --preview-window 'down:15%')
     # Add simple border for fzf < 0.4.0
     fzf_args+=( --border)
     # Add simpler bindings for fzf < 0.4.0
@@ -825,6 +826,25 @@ arradio-ui() {
 
   # Pipe default list into fzf
   eval "${default_cmd}" | fzf "${fzf_args[@]}"
+}
+
+
+# =============================================================================
+# KEY BINDINGS
+# =============================================================================
+
+arradio-keybindings() {
+  cat <<EOF
+Keybindings:
+  Enter         Select | Start
+  Focus         Change selection.
+  Ctrl-f        Reload favorites.
+  Ctrl-t        Reload Shoutcast list.
+  Ctrl-y        Reload SomaFM list.
+  Ctrl-u        Reload IPTV list.
+  +             Add selection to favorites.
+  -             Remove selection to favorites.
+EOF
 }
 
 # =============================================================================
@@ -897,6 +917,7 @@ while [ "$1" ]; do
     ui)     arradio-ui; break ;;
     tlist)  arradio-ui-list-themes; break ;;
     env)    arradio-print-env; break ;;
+    keys)   arradio-keybindings;break ;;
     version)arradio-print-version; break ;;
     list)   arradio-list; break ;;
     *) arradio-print-help; break ;;
