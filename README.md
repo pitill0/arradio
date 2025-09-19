@@ -89,6 +89,7 @@ Commands:
   ui                       Start UI (fzf required)
   tlist                    List installed UI themes
   env                      Show environment variables
+  keys                     Show keybindings
   version                  Show version
   help                     Show this help
 
