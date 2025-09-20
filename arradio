@@ -564,7 +564,7 @@ arradio-list() {
 }
 
 # =============================================================================
-# PLAY / INFO / FAVORITES
+# PLAY / INFO / FAVORITES / RANDOM
 # =============================================================================
 arradio-play() {
   local stream_id="$1"
@@ -632,6 +632,13 @@ arradio-flist() {
       wide)   printf "%-18s  %-40s  %-28s  %s\n" "${stream_id}" "${station_name:-none}" "${station_genre:-none}" "${station_info:-none}";;
     esac
   done
+}
+
+arradio-frnd() {
+  arradio-check-deps shuf
+  arradio-check-favorites
+  local rnd="$(find "${ARRADIO_FAV_DIR}" -printf "%f\n" | shuf -n 1)"
+  arradio-play "${rnd}" -p '${ARRADIO_PLAYER_CMD}'
 }
 
 # =============================================================================
@@ -736,7 +743,7 @@ arradio-ui() {
     key_index=$((key_index+1))
     [ "$key_index" -ge "${#keys[@]}" ] && break
   done
-  local header_text=$'\n[ '"${header_parts}"$' ]\n[ ENTER to play | +/- add/del to Favorites ]\n\n'
+  local header_text=$'\n[ '"${header_parts}"$' ]\n[ ENTER to play | +/- add/del to Favorites | Ctrl+r to play random favorite station ]\n\n'
 
   # Helper to map service to command
   service_cmd() {
@@ -787,6 +794,7 @@ arradio-ui() {
     fzf_args+=( --bind "focus:change-preview(arradio info {1})")
     fzf_args+=( --bind "+:reload(arradio fadd {1}; arradio flist -l ${ARRADIO_OUTPUT_LIMIT} -o ${ARRADIO_OUTPUT_FILTER})+change-prompt(Favorites> )+change-preview(arradio info {1})")
     fzf_args+=( --bind "-:reload(arradio fdel {1}; arradio flist -l ${ARRADIO_OUTPUT_LIMIT} -o ${ARRADIO_OUTPUT_FILTER})+change-prompt(Favorites> )+change-preview(arradio info {1})")
+    fzf_args+=( --bind "ctrl-r:change-preview(arradio frnd)+reload(arradio flist)")
   else
     # Use custom prompt for fzf < 0.4.0
     fzf_args+=( --prompt "arradio> ")
@@ -839,6 +847,7 @@ Keybindings:
   Enter         Select | Start
   Focus         Change selection.
   Ctrl-f        Reload favorites.
+  Ctrl-r        Play random station from favorites.
   Ctrl-t        Reload Shoutcast list.
   Ctrl-y        Reload SomaFM list.
   Ctrl-u        Reload IPTV list.
@@ -914,6 +923,7 @@ while [ "$1" ]; do
     fadd)   shift; arradio-fadd "$1"; break ;;
     fdel)   shift; arradio-fdel "$1"; break ;;
     flist)  arradio-flist; break ;;
+    frnd)   arradio-frnd; break ;;
     ui)     arradio-ui; break ;;
     tlist)  arradio-ui-list-themes; break ;;
     env)    arradio-print-env; break ;;
