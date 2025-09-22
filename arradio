@@ -635,6 +635,7 @@ arradio-flist() {
   done
 }
 
+
 arradio-frnd() {
   arradio-check-deps shuf
   arradio-check-favorites
@@ -928,7 +929,7 @@ while [ "$1" ]; do
     ui)     arradio-ui; break ;;
     tlist)  arradio-ui-list-themes; break ;;
     env)    arradio-print-env; break ;;
-    keys)   arradio-keybindings;break ;;
+    keys)   arradio-keybindings; break ;;
     version)arradio-print-version; break ;;
     list)   arradio-list; break ;;
     *) arradio-print-help; break ;;
