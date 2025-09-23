@@ -86,7 +86,6 @@ Commands:
   fadd [stream-id]         Add to favorites
   fdel [stream-id]         Remove from favorites
   flist                    List favorites
-  frnd                     Play random favorite station
   ui                       Start UI (fzf required)
   tlist                    List installed UI themes
   env                      Show environment variables
