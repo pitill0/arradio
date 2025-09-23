@@ -571,8 +571,8 @@ arradio-play() {
   local stream_id="$1"
   local stream_url; stream_url="$(arradio-get-stream-url "$stream_id")"
   [ -z "${stream_url}" ] && arradio-msg-error "stream_url not found for stream_id ${stream_id}"
-  arradio-set-player
   arradio-playstatus "$1"
+  arradio-set-player
   arradio-msg-info "${ARRADIO_PLAYER_CMD} ${stream_url}"
   eval "${ARRADIO_PLAYER_CMD} \"${stream_url}\""
 }
@@ -935,7 +935,6 @@ while [ "$1" ]; do
     fadd)   shift; arradio-fadd "$1"; break ;;
     fdel)   shift; arradio-fdel "$1"; break ;;
     flist)  arradio-flist; break ;;
-    frnd)   arradio-frnd; break ;;
     ui)     arradio-ui; break ;;
     tlist)  arradio-ui-list-themes; break ;;
     env)    arradio-print-env; break ;;
