@@ -650,7 +650,6 @@ arradio-frnd() {
   arradio-check-deps shuf
   arradio-check-favorites
   local rnd="$(find "${ARRADIO_FAV_DIR}"/* -printf "%f\n" | shuf -n 1)"
-  arradio-playstatus "${rnd}"
   arradio-play "${rnd}" -p '${ARRADIO_PLAYER_CMD}'
 }
 
