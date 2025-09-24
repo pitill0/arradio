@@ -571,7 +571,7 @@ arradio-play() {
   local stream_id="$1"
   local stream_url; stream_url="$(arradio-get-stream-url "$stream_id")"
   [ -z "${stream_url}" ] && arradio-msg-error "stream_url not found for stream_id ${stream_id}"
-  arradio-playstatus "$1" 2>/dev/null
+  arradio-playstatus "$1" 2>&1
   arradio-set-player
   arradio-msg-info "${ARRADIO_PLAYER_CMD} ${stream_url}"
   eval "${ARRADIO_PLAYER_CMD} \"${stream_url}\""
@@ -630,8 +630,8 @@ arradio-flist() {
     station_name="$(grep '^name: ' "${fav_file}" 2>/dev/null | sed 's|name: ||' | head -c 40)"
     station_info="$(grep '^info: ' "${fav_file}" 2>/dev/null | sed 's|info: ||')"
     case "${ARRADIO_OUTPUT_FILTER}" in
-      simple) printf "%-18s  %-40s  %-28s\n" "${stream_id}" "${station_name:-none}" "${station_genre:-none}";;
-      wide)   printf "%-18s  %-40s  %-28s  %s\n" "${stream_id}" "${station_name:-none}" "${station_genre:-none}" "${station_info:-none}";;
+      simple) printf "%-18s  %-30s  %-18s\n" "${stream_id}" "${station_name:-none}" "${station_genre:-none}";;
+      wide)   printf "%-18s  %-30s  %-18s  %s\n" "${stream_id}" "${station_name:-none}" "${station_genre:-none}" "${station_info:-none}";;
     esac
   done
 }
