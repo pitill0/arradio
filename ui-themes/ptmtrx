@@ -34,7 +34,8 @@ preview_scrollbar='preview-scrollbar:#58d68d'
 # Horizontal separator on info line
 separator='separator:#f4d03f'
 # Border label (--border-label and --preview-label)
-label='label:#e74c3c'
+#label='label:#e74c3c'
+label='label:#58d68d'
 # Border label of the preview window (--preview-label)
 preview_label='preview-label:#f4d03f'
 # Prompt
