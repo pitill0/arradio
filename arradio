@@ -620,8 +620,8 @@ arradio-flist() {
   local msgprefix='\033[1m'; local msgsuffix='\033[0m'
   [ "${ARRADIO_NOCOLOR:-0}" -eq 1 ] && msgprefix=''
   case "${ARRADIO_OUTPUT_FILTER}" in
-    simple) printf "%b%-18s  %-40s  %-28s%b\n" "$msgprefix" "STATION" "NAME" "GENRE" "$msgsuffix";;
-    wide)   printf "%b%-18s  %-40s  %-28s  %s%b\n" "$msgprefix" "STATION" "NAME" "GENRE" "INFO" "$msgsuffix";;
+    simple) printf "%b%-18s  %-30s  %-18s%b\n" "$msgprefix" "STATION" "NAME" "GENRE" "$msgsuffix";;
+    wide)   printf "%b%-18s  %-30s  %-18s  %s%b\n" "$msgprefix" "STATION" "NAME" "GENRE" "INFO" "$msgsuffix";;
   esac
   for fav_file in "${ARRADIO_FAV_DIR}"/*; do
     [ -f "${fav_file}" ] || continue
